@@ -9,17 +9,19 @@ export default function useFetch(url: string, stage:number) {
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        axios.get(url)
-            .then(response => {
-                setData(response.data);
-                console.log("data setted");
-            })
-            .catch(err => {
-                setError(err);
-            })
-            .finally(() => {
-                setIsFetching(false);
-            });
+        if(stage!==0){
+            axios.get(url)
+                .then(response => {
+                    setData(response.data);
+                    console.log("data setted");
+                })
+                .catch(err => {
+                    setError(err);
+                })
+                .finally(() => {
+                    setIsFetching(false);
+                });
+        }
     }, [stage])
 
 
