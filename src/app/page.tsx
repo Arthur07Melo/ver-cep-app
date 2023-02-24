@@ -1,90 +1,61 @@
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from './page.module.css'
+"use client";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import useFetch from "@/hooks/useFetch";
+import { ObjectType } from "typescript";
 
-const inter = Inter({ subsets: ['latin'] })
+
+
+interface cepType {
+  cep: string;
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  localidade: string,
+  uf: string,
+  ibge: string,
+  gia: string,
+  ddd: string,
+  siafi: string
+}
+
+type CepFormType = {
+  CEPinput: string
+}
 
 export default function Home() {
+  const [CEP, setCEP] = useState(0);
+  const { register, handleSubmit } = useForm<CepFormType>();
+
+  const onSubmit = (data: CepFormType) => { setCEP(Number(data.CEPinput)); console.log(CEP) }
+
+  let { data: CEPinfos, error, isFetching } = useFetch(`https://viacep.com.br/ws/${CEP}/json/`, CEP);
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <main className="w-screen h-screen flex flex-col justify-center items-center text-white bg-background bg-no-repeat bg-cover bg-fixed bg-center">
+      <div className="flex flex-col justify-center items-center max-w-2xl backdrop-blur rounded-3xl shadow-2xl border-gray-300 border-2 py-3">
+
+      <div className="flex flex-col items-center justify-center w-full">
+        <h1 className="text-3xl font-medium p-2 mx-56">VER CEP</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col items-center justify-center" action="">
+          <input className="text-lg font-semibold border-gray-700 bg-gray-700 bg-opacity-50 rounded-lg w-11/12 h-12 px-10 my-3" {...register("CEPinput")} type="number" placeholder="Insira seu CEP" />
+          <button className="bg-gray-700 bg-opacity-50 rounded-lg p-3 w-4/12 mb-3 hover:bg-gray-600" type="submit">SUBMIT</button>
+        </form>
       </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
+
+      <div className="flex flex-col items-center justify-center w-full">
+        {Object.keys(CEPinfos).map((element, i) => {
+          return (
+            <div className="flex items-center" key={i}>
+              <h1 className="text-green-700 text-lg font-extrabold">{element}: </h1>
+              <h1 className="font-bold">{CEPinfos[(element as keyof typeof CEPinfos)]}</h1>
+            </div>
+          )
+        })}
       </div>
 
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
       </div>
     </main>
   )
