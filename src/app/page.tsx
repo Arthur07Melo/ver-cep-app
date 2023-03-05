@@ -26,7 +26,7 @@ export default function Home() {
   
 
   return (
-    <main className="w-screen h-screen flex flex-col justify-center items-center text-white bg-[url('../assets/bg-image.jpg')] bg-no-repeat bg-cover bg-fixed bg-center">
+    <main className="w-screen h-screen flex flex-col justify-center overflow-hidden items-center text-white bg-[url('../assets/bg-image.jpg')] bg-no-repeat bg-cover bg-fixed bg-center">
       <div className="flex flex-col justify-center items-center max-w-2xl backdrop-blur rounded-3xl shadow-2xl border-gray-300 border-2 py-3">
 
         <CepForm setCEP={setCEP} />
